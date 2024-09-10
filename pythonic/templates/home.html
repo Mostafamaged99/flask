@@ -104,19 +104,21 @@
 <!-- Courses -->
 <section class="bg-light">
   <div class="container p-5">
-    <h3 class="text-center text-secondary h1 text-warning" id="learn">COURSES</h3>
+    <h3 class="text-center text-secondary h1 text-warning" id="learn">
+      COURSES
+    </h3>
     <div class="row">
       {% for course in courses %}
       <div class="col-sm-12 col-md-6 col-lg-4 p-3 d-flex align-items-stretch">
-        <a href="#course_name" class="text-decoration-none">
-          <div class="card bg-dark text-light">
+        <a href="{{url_for('course', course_title=course.title)}}" class="text-decoration-none">
+          <div class="card bg-dark text-light h-100">
             <div class="card-body text-center">
               <img
-                src="{{url_for('static', filename=course.icon)}}"
+                src="{{url_for('static', filename='course_icons/'+course.icon)}}"
                 alt=""
-                class="card-img w-25"
+                class="card-img w-25 rounded-circle"
               />
-              <h4 class="card-title mb-4">{{course.name}}</h4>
+              <h4 class="card-title mb-4">{{course.title}}</h4>
               <p class="card-text">{{course.description}}</p>
             </div>
           </div>
@@ -131,37 +133,50 @@
   <div class="container p-5">
     <div class="row mb-5">
       <div class="col">
-        <h3 class="text-uppercase text-center text-light h1">
-          latest lessons
-        </h3>
+        <h3 class="text-uppercase text-center text-light h1">latest lessons</h3>
       </div>
     </div>
     <div class="row">
       {% for lesson in lessons %}
       <div class="col-sm-12 col-md-6 col-lg-4 pb-5 d-flex align-items-stretch">
-        <div class="card lesson">
-          <img
-            src="{{url_for('static', filename=lesson.thumbnail)}}"
-            class="card-img"
-          />
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">
-              <a class="text-decoration-none text-dark" href="#"
-                >{{lesson.title}}</a
+
+        <a href=""{{url_for('lesson', lesson_slug=lesson.slug, course=lesson.course_name.title)}}"">
+          <div class="card lesson">
+            <img
+              src="{{url_for('static', filename='lesson_thumbnails/'+lesson.thumbnail)}}"
+              class="card-img"
+            />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">
+                <a
+                  class="text-decoration-none text-dark"
+                  href="{{url_for('lesson', lesson_slug=lesson.slug, course=lesson.course_name.title)}}"
+                  >{{lesson.title}}</a
+                >
+              </h5>
+              <p class="card-text mb-0">
+                In:
+                <a class="text-decoration-none" href="#"
+                  >{{lesson.course_name.title}}</a
+                >
+              </p>
+              <span
+                ><img
+                  class="article-img"
+                  src="{{url_for('static', filename='default.png')}}"
+                  alt=""
+                />By:
+                <a href="#" class="link">{{lesson.author.username}}</a></span
               >
-            </h5>
-            <p class="card-text mb-0">
-              In:
-              <a class="text-decoration-none" href="#">{{lesson.course}}</a>
-            </p>
-            <span
-              ><img
-                class="article-img"
-                src="{{url_for('static', filename='default.png')}}"
-                alt=""
-              />By: <a href="#" class="link">{{lesson.author}}</a></span
-            >
-          </div>
+              <span class="text-muted"
+                >On: {{lesson.date_posted.strftime('%Y-%m-%d')}}</span
+              >
+            </div>
+        </a>
+
+       
+        
+        
         </div>
       </div>
       {% endfor %}
