@@ -1,16 +1,17 @@
 {% extends "layout.html"%} {% block content %}
+<!-- author image and bio -->
 <div class="container-fluid bg-secondary">
   <div class="container">
     <div class="row p-5">
       <div class="col-6">
         <img
-          src="{{url_for('static', filename='course_icons/'+course.icon)}}"
-          class="article-img rounded-circle"
+          class="rounded-circle"
+          src="{{url_for('static', filename='user_pics/' + user.image_file)}}"
           alt=""
         />
       </div>
       <div class="col-6">
-        <span class="lead text-light">{{course.description}}</span>
+        <span class="lead text-light">{{user.bio}}</span>
       </div>
     </div>
   </div>
@@ -34,14 +35,14 @@
                 >{{lesson.title}}</a
               >
             </h5>
-            <span
-              ><img
-                class="article-img rounded-circle"
-                src="{{url_for('static', filename='user_pics/'+lesson.author.image_file)}}"
-                alt=""
-              />By:
-              <a href="#" class="link">{{lesson.author.username}}</a></span
-            >
+            <p class="card-text mb-0">
+              In:
+              <a
+                href="{{url_for('course', course_title=lesson.course_name.title)}}"
+                class="link"
+                >{{lesson.course_name.title}}</a
+              >
+            </p>
             <span class="text-muted"
               >On: {{lesson.date_posted.strftime('%Y-%m-%d')}}</span
             >
@@ -49,6 +50,7 @@
         </div>
       </div>
       {% endfor %}
+
       <!-- pagination links -->
       <nav class="mt-5" aria-label="...">
         <ul class="pagination" style="display: flex; justify-content: flex-end">
@@ -57,7 +59,7 @@
           lessons.page == page_num %}
           <li class="page-item active">
             <a
-              href="{{url_for('course', course_title=course.title, page=page_num)}}"
+              href="{{url_for('author', username=user.username, page=page_num)}}"
               class="page-link"
               >{{page_num}}</a
             >
@@ -65,7 +67,7 @@
           {%else%}
           <li class="page-item">
             <a
-              href="{{url_for('course', course_title=course.title, page=page_num)}}"
+              href="{{url_for('author', username=user.username, page=page_num)}}"
               class="page-link"
               >{{page_num}}</a
             >

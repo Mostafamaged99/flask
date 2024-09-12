@@ -55,8 +55,8 @@ def delete_picture(picture_name, path):
 @app.route("/")
 @app.route("/home")
 def home():
-    lessons = Lesson.query.all()
-    courses = Course.query.all()
+    lessons = Lesson.query.order_by(Lesson.date_posted.desc()).paginate(page=1, per_page=6) 
+    courses = Course.query.paginate(page=1, per_page=3)
     return render_template("home.html", lessons=lessons, courses=courses)
 
 
@@ -218,11 +218,16 @@ def course(course_title):
     course = Course.query.filter_by(title=course_title).first()
     course_id = course.id if course else None
     course = Course.query.get_or_404(course_id)
-    return render_template("course.html", title=course_title, course=course)
+    page = request.args.get("page", 1, type=int)
+    lessons = Lesson.query.filter_by(course_id=course_id).paginate(
+        page=page, per_page=6
+    )
+    return render_template("course.html", title=course_title, course=course, lessons=lessons)
 
 @app.route('/courses')
 def courses():  
-    courses = Course.query.all()
+    page = request.args.get("page", 1, type=int)
+    courses = Course.query.paginate(page=page, per_page=5)
     return render_template('courses.html', courses=courses)
 
 @app.route("/dashboard/user_lessons", methods=["GET", "POST"])
@@ -279,3 +284,16 @@ def delete_lesson(lesson_id):
     db.session.commit()
     flash("Your lesson has been deleted!", "success")
     return redirect(url_for("user_lessons"))
+
+@app.route("/author/<string:username>", methods=["GET"])
+def author(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    page = request.args.get("page", 1, type=int)
+    lessons = (
+        Lesson.query.filter_by(author=user)
+        .order_by(Lesson.date_posted.desc())
+        .paginate(page=1, per_page=6)
+    )
+    return render_template(
+        "author.html", title=f"{user.username}'s Lessons", user=user, lessons=lessons
+    )   
