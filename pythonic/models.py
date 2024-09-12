@@ -48,3 +48,4 @@ class Course(db.Model):
 
     def __repr__(self):
         return f"Course('{self.title}')"
+    

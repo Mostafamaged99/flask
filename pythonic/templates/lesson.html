@@ -3,12 +3,7 @@
   <div class="row">
     <!-- article contents -->
     <div class="col-lg-8 col-md-12">
-      <div class="container pt-5">
-        <br />
-        <h2>{{lesson.title}}</h2>
-        <hr />
-        {{lesson.content | safe}}
-      </div>
+      {% block lesson %} {% endblock lesson %}
       <!--  previous and next lesson -->
       <div class="row justify-content-md-center">
         <div class="col-4">

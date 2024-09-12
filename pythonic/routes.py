@@ -2,13 +2,14 @@ import secrets
 from PIL import Image
 import os
 from pythonic.models import User, Lesson, Course
-from flask import render_template, url_for, flash, redirect, request, session
+from flask import render_template, url_for, flash, redirect, request, session, abort
 from pythonic.forms import (
     NewCourseForm,
     NewLessonForm,
     RegistrationForm,
     LoginForm,
     UpdateProfileForm,
+    LessonUpdateForm
 )
 from pythonic import app, bcrypt, db
 from flask_modals import render_template_modal
@@ -44,6 +45,12 @@ def get_previous_next_lesson(lesson):
             break
     return previous_lesson, next_lesson
 
+def delete_picture(picture_name, path):
+    picture_path = os.path.join(app.root_path, path, picture_name)
+    try:
+        os.remove(picture_path)
+    except:
+        pass
 
 @app.route("/")
 @app.route("/home")
@@ -171,9 +178,9 @@ def new_lesson():
         return redirect(url_for("new_lesson"))
 
     elif form == "new_course_form" and new_course_form.validate_on_submit():
-        if new_course_form.thumbnail.data:  
+        if new_course_form.icon.data:  
             picture_file = save_picture(
-                new_course_form.thumbnail.data, "static/course_icons",output_size=(150,150)
+                new_course_form.icon.data, "static/course_icons",output_size=(150,150)
             )
         course_title = str(new_course_form.title.data).replace(" ", "-")
         course = Course(
@@ -204,7 +211,7 @@ def lesson( lesson_slug,course):
         previous_lesson, next_lesson = get_previous_next_lesson(lesson)
     lesson_id = lesson.id if lesson else None
     lesson = Lesson.query.get_or_404(lesson_id)
-    return render_template("lesson.html", title=lesson.title, lesson=lesson, previous_lesson=previous_lesson, next_lesson=next_lesson)
+    return render_template("lesson_view.html", title=lesson.title, lesson=lesson, previous_lesson=previous_lesson, next_lesson=next_lesson)
 
 @app.route("/<string:course_title>")
 def course(course_title):
@@ -217,3 +224,58 @@ def course(course_title):
 def courses():  
     courses = Course.query.all()
     return render_template('courses.html', courses=courses)
+
+@app.route("/dashboard/user_lessons", methods=["GET", "POST"])
+@login_required
+def user_lessons():
+    return render_template(
+        "user_lessons.html", title="Your Lessons", active_tab="user_lessons"
+    )
+
+@app.route("/<string:course>/<string:lesson_slug>/update", methods=["GET", "POST"])
+def update_lesson(lesson_slug, course):
+    lesson = Lesson.query.filter_by(slug=lesson_slug).first()
+    if lesson:
+        previous_lesson, next_lesson = get_previous_next_lesson(lesson)
+    lesson_id = lesson.id if lesson else None
+    lesson = Lesson.query.get_or_404(lesson_id)
+    if lesson.author != current_user:
+        abort(403)
+    form = LessonUpdateForm()
+    if form.validate_on_submit():
+        lesson.course_name = form.course.data
+        lesson.title = form.title.data
+        lesson.slug = str(form.slug.data).replace(" ", "-")
+        lesson.content = form.content.data
+        if form.thumbnail.data:
+            delete_picture(lesson.thumbnail, "static/lesson_thumbnails")
+            new_picture = save_picture(form.thumbnail.data, "static/lesson_thumbnails")
+            lesson.thumbnail = new_picture
+        db.session.commit()
+        flash("Your lesson has been updated!", "success")
+        return redirect(
+            url_for("lesson", lesson_slug=lesson.slug, course=lesson.course_name.title)
+        )
+    elif request.method == "GET":
+        form.course.data = lesson.course_name.title
+        form.title.data = lesson.title
+        form.slug.data = lesson.slug
+        form.content.data = lesson.content
+    return render_template(
+        "update_lesson.html",
+        title="Update | " + lesson.title,
+        lesson=lesson,
+        previous_lesson=previous_lesson,
+        next_lesson=next_lesson,
+        form=form,
+    )
+
+@app.route("/lesson/<lesson_id>/delete", methods=["POST"])
+def delete_lesson(lesson_id):
+    lesson = Lesson.query.get_or_404(lesson_id)
+    if lesson.author != current_user:
+        abort(403)
+    db.session.delete(lesson)
+    db.session.commit()
+    flash("Your lesson has been deleted!", "success")
+    return redirect(url_for("user_lessons"))
