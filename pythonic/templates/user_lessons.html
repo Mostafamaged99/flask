@@ -22,7 +22,7 @@
             <h5 class="card-title">
               <a
                 class="text-decoration-none text-dark"
-                href="{{url_for('lesson', lesson_slug=lesson.slug, course=lesson.course_name.title)}}"
+                href="{{url_for('lessons.lesson', lesson_slug=lesson.slug, course=lesson.course_name.title)}}"
                 >{{lesson.title}}</a
               >
             </h5>
@@ -39,7 +39,7 @@
             >
             <div class="m-auto">
               <a
-                href="{{url_for('update_lesson', lesson_slug = lesson.slug, course = lesson.course_name.title)}}"
+                href="{{url_for('lessons.update_lesson', lesson_slug = lesson.slug, course = lesson.course_name.title)}}"
                 class="btn btn-info btn-sm m-1"
                 >Update</a
               >
@@ -85,7 +85,7 @@
                 Close
               </button>
               <form
-                action="{{ url_for('delete_lesson', lesson_id = lesson.id)}}"
+                action="{{ url_for('lessons.delete_lesson', lesson_id = lesson.id)}}"
                 method="POST"
               >
                 <input type="submit" class="btn btn-danger" value="Delete" />

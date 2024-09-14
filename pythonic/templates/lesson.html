@@ -9,7 +9,7 @@
         <div class="col-4">
           {% if previous_lesson %}
           <a
-            href="{{url_for('lesson', lesson_slug=previous_lesson.slug, course=previous_lesson.course_name.title)}}"
+            href="{{url_for('lessons.lesson', lesson_slug=previous_lesson.slug, course=previous_lesson.course_name.title)}}"
           >
             <button
               class="btn btn-warning"
@@ -26,7 +26,7 @@
         <div class="col-4">
           {% if next_lesson %}
           <a
-            href="{{url_for('lesson', lesson_slug=next_lesson.slug, course=next_lesson.course_name.title)}}"
+            href="{{url_for('lessons.lesson', lesson_slug=next_lesson.slug, course=next_lesson.course_name.title)}}"
           >
             <button
               class="btn btn-warning"
@@ -72,7 +72,7 @@
         <li class="list-group-item border active" aria-current="true">
           <a
             class="link text-light"
-            href="{{url_for('lesson', lesson_slug=lsn.slug, course=lsn.course_name.title)}}"
+            href="{{url_for('lessons.lesson', lesson_slug=lsn.slug, course=lsn.course_name.title)}}"
             >{{lsn.title}}</a
           >
         </li>
@@ -80,7 +80,7 @@
         <li class="list-group-item border" aria-current="false">
           <a
             class="link text-dark"
-            href="{{url_for('lesson', lesson_slug=lsn.slug, course=lsn.course_name.title)}}"
+            href="{{url_for('lessons.lesson', lesson_slug=lsn.slug, course=lsn.course_name.title)}}"
             >{{lsn.title}}</a
           >
         </li>

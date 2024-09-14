@@ -30,7 +30,7 @@
             <h5 class="card-title">
               <a
                 class="text-decoration-none text-dark"
-                href="{{url_for('lesson', lesson_slug=lesson.slug, course=lesson.course_name.title)}}"
+                href="{{url_for('lessons.lesson', lesson_slug=lesson.slug, course=lesson.course_name.title)}}"
                 >{{lesson.title}}</a
               >
             </h5>
@@ -57,7 +57,7 @@
           lessons.page == page_num %}
           <li class="page-item active">
             <a
-              href="{{url_for('course', course_title=course.title, page=page_num)}}"
+              href="{{url_for('courses_bp.course', course_title=course.title, page=page_num)}}"
               class="page-link"
               >{{page_num}}</a
             >
@@ -65,7 +65,7 @@
           {%else%}
           <li class="page-item">
             <a
-              href="{{url_for('course', course_title=course.title, page=page_num)}}"
+              href="{{url_for('courses_bp.course', course_title=course.title, page=page_num)}}"
               class="page-link"
               >{{page_num}}</a
             >

@@ -7,7 +7,7 @@
       {% for course in courses.items %}
       <div class="col-sm-12 col-md-6 col-lg-4 p-3 d-flex align-items-stretch">
         <a
-          href="{{url_for('course', course_title=course.title)}}"
+          href="{{url_for('courses_bp.course', course_title=course.title)}}"
           class="text-decoration-none"
         >
           <div class="card bg-dark text-light h-100">
@@ -31,13 +31,13 @@
           left_current=1, right_current=2) %} {% if page_num %} {% if
           courses.page == page_num %}
           <li class="page-item active">
-            <a href="{{url_for('courses', page=page_num)}}" class="page-link"
+            <a href="{{url_for('courses_bp.courses', page=page_num)}}" class="page-link"
               >{{page_num}}</a
             >
           </li>
           {%else%}
           <li class="page-item">
-            <a href="{{url_for('courses', page=page_num)}}" class="page-link"
+            <a href="{{url_for('courses_bp.courses', page=page_num)}}" class="page-link"
               >{{page_num}}</a
             >
           </li>
