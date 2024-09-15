@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from flask_ckeditor import CKEditor
 from flask_modals import Modal
 from pythonic.config import Config
-
+#from flask_admin import Admin
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -14,8 +14,7 @@ migrate = Migrate(db)
 login_manager = LoginManager()
 ckeditor = CKEditor()
 modal = Modal()
-login_manager.login_view = "login"
-login_manager.login_message_category = "info"
+#admin = Admin()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -30,10 +29,14 @@ def create_app(config_class=Config):
     from pythonic.users.routes import users
     from pythonic.main.routes import main
     from pythonic.courses.routes import courses_bp
+    from pythonic.errors.handlers import errors
+    from pythonic.adminbp.routes import admin_bp
 
     app.register_blueprint(main)
     app.register_blueprint(courses_bp)
     app.register_blueprint(lessons)
     app.register_blueprint(users)
+    app.register_blueprint(errors)
+    app.register_blueprint(admin_bp)
 
     return app
